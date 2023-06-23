@@ -5,6 +5,9 @@ on:
     branches:
       - feature/*
 
+env:
+  ENVIRONMENT_NAME: DEV
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,4 +41,5 @@ jobs:
             This pull request was automatically created from the feature branch.
           draft: false
           base: "develop"
+          environment: ${{ env.ENVIRONMENT_NAME }}
           labels: enhancement
