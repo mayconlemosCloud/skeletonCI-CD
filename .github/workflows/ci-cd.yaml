@@ -1,8 +1,9 @@
 name: CI/CD
+
 on:
   push:
     branches:
-      - main
+      - "feature*"
 
 jobs:
   build:
@@ -16,3 +17,23 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm test
+
+  create_pull_request:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
+          title: "Feature Branch Pull Request"
+          body: |
+            This pull request was automatically created from the feature branch.
+          draft: false
+          base: "develop"
+          reviewers: username1, username2
+          labels: enhancement
