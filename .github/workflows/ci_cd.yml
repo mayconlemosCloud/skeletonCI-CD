@@ -38,5 +38,4 @@ jobs:
             This pull request was automatically created from the feature branch.
           draft: false
           base: "develop"
-          reviewers: username1, username2
           labels: enhancement
