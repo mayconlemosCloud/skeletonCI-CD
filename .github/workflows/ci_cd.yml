@@ -33,11 +33,11 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
           BRANCH_NAME=$(echo "${{ github.ref }}" | sed -e "s/refs\/heads\///")
           PR_TITLE="Feature Branch Pull Request"
           PR_BODY="This pull request was automatically created from the feature branch."
           PR_BASE="develop"
-          PR_LABELS="enhancement, ${{ env.ENVIRONMENT_NAME }}"
+          PR_LABELS="enhancement, DEV"
 
-          gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base "$PR_BASE" --label "$PR_LABELS" --repo ${{ github.repository }} --head "${{ github.repository }}:$BRANCH_NAME"
+          gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base "$PR_BASE" --label "$PR_LABELS" --repo mayconlemosCloud/skeletonCI-CD --head "mayconlemosCloud/skeletonCI-CD:$BRANCH_NAME"
