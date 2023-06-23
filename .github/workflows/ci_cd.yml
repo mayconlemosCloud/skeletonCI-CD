@@ -41,5 +41,4 @@ jobs:
             This pull request was automatically created from the feature branch.
           draft: false
           base: "develop"
-          environment: ${{ env.ENVIRONMENT_NAME }}
-          labels: enhancement
+          labels: enhancement, ${{ env.ENVIRONMENT_NAME }}
