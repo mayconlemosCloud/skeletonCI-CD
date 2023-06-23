@@ -32,12 +32,35 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create Pull Request
-        run: |
-          GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          BRANCH_NAME=$(echo "${{ github.ref }}" | sed -e "s/refs\/heads\///")
-          PR_TITLE="Feature Branch Pull Request"
-          PR_BODY="This pull request was automatically created from the feature branch."
-          PR_BASE="develop"
-          PR_LABELS="enhancement, DEV"
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { context, github } = require('@actions/github');
+            const token = process.env.GITHUB_TOKEN;
+            const baseBranch = 'develop';
+            const branchName = context.payload.ref.replace('refs/heads/', '');
+            const title = 'Feature Branch Pull Request';
+            const body = 'This pull request was automatically created from the feature branch.';
+            const labels = ['enhancement', process.env.ENVIRONMENT_NAME];
 
-          gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base "$PR_BASE" --label "$PR_LABELS" --repo mayconlemosCloud/skeletonCI-CD --head "mayconlemosCloud/skeletonCI-CD:$BRANCH_NAME"
+            async function createPullRequest() {
+              try {
+                const response = await github.pulls.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title,
+                  body,
+                  head: `${context.repo.owner}:${branchName}`,
+                  base: baseBranch,
+                  labels,
+                  token,
+                });
+                console.log('Pull request created:', response.data.html_url);
+              } catch (error) {
+                console.error('Error creating pull request:', error.message);
+                process.exit(1);
+              }
+            }
+
+            createPullRequest();
+          token: ${{ secrets.GITHUB_TOKEN }}
