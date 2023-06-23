@@ -10,16 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     name: Node 16 sample
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm ci
-      - run: npm test
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
 
   create_pull_request:
-    needs: ci
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,7 +32,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.head_ref }}
+          branch: ${{ github.ref }}
           title: "Feature Branch Pull Request"
           body: |
             This pull request was automatically created from the feature branch.
