@@ -1,9 +1,9 @@
-name: CI/CD
+name: CI and Create Pull Request
 
 on:
   push:
     branches:
-      - "feature*"
+      - "*"
 
 jobs:
   build:
