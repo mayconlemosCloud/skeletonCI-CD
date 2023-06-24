@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Change directory to miniapi
-        run: cd miniapi
+        run: cd ./MiniApi
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v1
