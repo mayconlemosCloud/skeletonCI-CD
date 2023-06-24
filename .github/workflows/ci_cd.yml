@@ -14,21 +14,29 @@ jobs:
     name: CI
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Change directory to miniapi
-        run: cd ./MiniApi && ls -la
+      - name: Change directory to MiniApi
+        run: |
+          cd MiniApi
+          ls -la
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "6.0.x"
 
       - name: Restore dependencies
-        run: dotnet restore MiniApi.sln
+        run: |
+          cd MiniApi
+          dotnet restore MiniApi.sln
 
       - name: Build project
-        run: dotnet build --configuration Release
+        run: |
+          cd MiniApi
+          dotnet build --configuration Release
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-restore
+        run: |
+          cd MiniApi
+          dotnet test --configuration Release --no-restore
