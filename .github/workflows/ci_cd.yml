@@ -15,52 +15,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+
+      - name: Navigate to project directory
+        run: cd MiniAPI
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1
         with:
-          node-version: 16
-      - name: Install dependencies
-        run: npm ci
+          dotnet-version: "6.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release
+
       - name: Run tests
-        run: npm test
-
-  create_pull_request:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Create Pull Request
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const { context, github } = require('@actions/github');
-            const token = process.env.GITHUB_TOKEN;
-            const baseBranch = 'develop';
-            const branchName = context.payload.ref.replace('refs/heads/', '');
-            const title = 'Feature Branch Pull Request';
-            const body = 'This pull request was automatically created from the feature branch.';
-            const labels = ['enhancement', process.env.ENVIRONMENT_NAME];
-
-            async function createPullRequest() {
-              try {
-                const response = await github.pulls.create({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  title,
-                  body,
-                  head: `${context.repo.owner}:${branchName}`,
-                  base: baseBranch,
-                  labels,
-                  token,
-                });
-                console.log('Pull request created:', response.data.html_url);
-              } catch (error) {
-                console.error('Error creating pull request:', error.message);
-                process.exit(1);
-              }
-            }
-
-            createPullRequest();
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet test --configuration Release --no-restore
