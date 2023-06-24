@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Change path
+        uses: cd MiniApi
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v1
         with:
