@@ -1,0 +1,42 @@
+name: CI and Create Pull Request
+
+on:
+  push:
+    branches:
+      - feature/*
+
+env:
+  ENVIRONMENT_NAME: DEV
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: CI
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Change directory to MiniApi
+        run: |
+          cd MiniApi
+          ls -la
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: Restore dependencies
+        run: |
+          cd MiniApi
+          dotnet restore MiniApi.sln
+
+      - name: Build project
+        run: |
+          cd MiniApi
+          dotnet build --configuration Release
+
+      - name: Run tests
+        run: |
+          cd MiniApi
+          dotnet test --configuration Release --no-restore
